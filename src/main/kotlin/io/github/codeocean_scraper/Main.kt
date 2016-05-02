@@ -1,13 +1,13 @@
-package io.github.codeocean_scrapper
+package io.github.codeocean_scraper
 
-import io.github.codeocean_scrapper.analysis.analyseAndSave
-import io.github.codeocean_scrapper.analysis.findStudentSubmissionPages
+import io.github.codeocean_scraper.analysis.analyseAndSave
+import io.github.codeocean_scraper.analysis.findStudentSubmissionPages
 import java.net.URL
 import java.nio.file.Paths
 
 
 fun printUsage() {
-    println("Usage: codeocean_scrapper targetDirectory statisticsUrl sessionKey")
+    println("Usage: codeocean_scraper targetDirectory statisticsUrl sessionKey")
     System.exit(1)
 }
 

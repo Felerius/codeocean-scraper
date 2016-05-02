@@ -1,4 +1,4 @@
-package io.github.codeocean_scrapper.analysis
+package io.github.codeocean_scraper.analysis
 
 import org.jsoup.nodes.Document
 

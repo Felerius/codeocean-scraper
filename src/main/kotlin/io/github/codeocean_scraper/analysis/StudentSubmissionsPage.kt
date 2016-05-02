@@ -1,13 +1,13 @@
-package io.github.codeocean_scrapper.analysis
+package io.github.codeocean_scraper.analysis
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.github.codeocean_scrapper.PageFetcher
-import io.github.codeocean_scrapper.RelevancyType
-import io.github.codeocean_scrapper.parsing.Submission
-import io.github.codeocean_scrapper.parsing.SubmissionCause
-import io.github.codeocean_scrapper.parsing.SubmissionFile
+import io.github.codeocean_scraper.PageFetcher
+import io.github.codeocean_scraper.RelevancyType
+import io.github.codeocean_scraper.parsing.Submission
+import io.github.codeocean_scraper.parsing.SubmissionCause
+import io.github.codeocean_scraper.parsing.SubmissionFile
 import org.jsoup.HttpStatusException
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element

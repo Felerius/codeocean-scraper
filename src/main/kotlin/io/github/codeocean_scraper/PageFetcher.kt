@@ -1,4 +1,4 @@
-package io.github.codeocean_scrapper
+package io.github.codeocean_scraper
 
 import org.jsoup.Jsoup
 

@@ -1,4 +1,4 @@
-package io.github.codeocean_scrapper.parsing
+package io.github.codeocean_scraper.parsing
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
