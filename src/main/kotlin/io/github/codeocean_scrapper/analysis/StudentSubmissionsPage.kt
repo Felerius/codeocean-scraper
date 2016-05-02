@@ -16,7 +16,7 @@ import java.nio.file.Path
 
 private val HEADER_TEMPLATE = """//
 // Submissions page: %s
-// Score: %f
+// Score: %s
 //
 
 """
@@ -89,7 +89,7 @@ private fun saveFiles(
             val filePath = studentDirectory.resolve(fileName)
             val header = HEADER_TEMPLATE.format(
                     submissionsPageUrl,
-                    submission.score ?: "Not scored"
+                    submission.score?.toString() ?: "Not scored"
             )
             filePath.toFile().writeText(header + file.content)
         }
