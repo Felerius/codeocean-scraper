@@ -21,9 +21,11 @@ fun main(args: Array<String>) {
     val baseUrl = "${statsUrl.protocol}://${statsUrl.authority}"
 
     val fetcher = PageFetcher(sessionKey)
+    println("Fetching statistics page...")
     val statDoc = fetcher.fetch(statsUrlString)
     val studentSubmissionPages = findStudentSubmissionPages(statDoc, baseUrl)
     for ((name, url) in studentSubmissionPages) {
+        println("Fetching submission(s) for $name...")
         analyseAndSave(url, fetcher, name, Paths.get(targetDirectory))
     }
 }
