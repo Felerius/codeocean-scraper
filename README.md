@@ -15,7 +15,7 @@ Execute with `java -jar path/to/jar targetDirectory statisticsPageUrl sessionKey
 Parameter explanation:
 - *targetDirectory:* All downloaded submissions will be saved under this directory. The directory must already exist.
 - *statisticsPageUrl:* Url to the statistics page of the exercise you want to download the submissions for.
-- *sessionKey:* Session key for authentication. Obtained by logging into CodeOcean on your browsers, then copying the content of the `_hands-on-programming_session` cookie.
+- *sessionKey:* Session key for authentication. Obtained by logging into CodeOcean in your browser, then copying the content of the `_hands-on-programming_session` cookie.
 
 ## Result
 
