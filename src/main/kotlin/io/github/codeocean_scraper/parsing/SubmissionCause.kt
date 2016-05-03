@@ -12,6 +12,9 @@ enum class SubmissionCause {
     @JsonProperty("test")
     TEST,
 
+    @JsonProperty("file")
+    FILE,
+
     @JsonProperty("download")
     DOWNLOAD,
 
