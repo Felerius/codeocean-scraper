@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
     println("Fetching statistics page...")
     val statDoc = fetcher.fetch(statsUrlString)
     val studentSubmissionPages = findStudentSubmissionPages(statDoc, baseUrl)
-    for ((name, url) in studentSubmissionPages) {
+    for ((name, url) in studentSubmissionPages.sortedBy { it.first }) {
         println("Fetching submission(s) for $name...")
         analyseAndSave(url, fetcher, name, Paths.get(targetDirectory))
     }
