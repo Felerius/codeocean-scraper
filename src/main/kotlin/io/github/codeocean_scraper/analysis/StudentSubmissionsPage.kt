@@ -11,6 +11,7 @@ import io.github.codeocean_scraper.parsing.SubmissionFile
 import org.jsoup.HttpStatusException
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import java.nio.file.Files
 import java.nio.file.Path
 
 
@@ -98,9 +99,8 @@ private fun saveFiles(
 
 fun createStudentDirectory(studentsDirectory: Path, studentName: String): Path {
     val studentDirectory = studentsDirectory.resolve(studentName)
-    if (!studentDirectory.toFile().mkdir()) {
-        throw Exception("Failed to create directory for student $studentName")
-    }
+
+    Files.createDirectories(studentDirectory)
 
     return studentDirectory
 }
