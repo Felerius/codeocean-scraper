@@ -1,26 +1,10 @@
 package io.github.codeocean_scraper.parsing
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
+@JsonDeserialize(using = SubmissionCauseDeserializer::class)
 enum class SubmissionCause {
-    @JsonProperty("autosave")
-    AUTOSAVE,
-
-    @JsonProperty("run")
-    RUN,
-
-    @JsonProperty("test")
-    TEST,
-
-    @JsonProperty("file")
-    FILE,
-
-    @JsonProperty("download")
-    DOWNLOAD,
-
-    @JsonProperty("assess")
     ASSESS,
-
-    @JsonProperty("submit")
-    SUBMIT
+    SUBMIT,
+    OTHER
 }
