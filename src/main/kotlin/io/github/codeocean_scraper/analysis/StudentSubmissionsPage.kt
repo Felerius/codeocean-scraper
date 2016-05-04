@@ -27,6 +27,7 @@ private fun relevancySuffix(relevancyType: RelevancyType) = when(relevancyType) 
         RelevancyType.ASSESSED_AFTER_SUBMIT -> " - ASSESSED AFTER SUBMIT"
         RelevancyType.ASSESSED_ONLY -> " - ASSESSED ONLY"
         RelevancyType.NO_ASSESS_OR_SUBMIT -> " - NO ASSESS OR SUBMIT"
+        RelevancyType.TOP_SCORE -> " - TOP SCORE"
 }
 
 private fun parseSubmissions(
@@ -36,7 +37,7 @@ private fun parseSubmissions(
     return mapper.readValue<List<Submission>>(dataNode.attr("data-submissions"))
 }
 
-private fun findRelevantSubmissions(
+private fun findRelevantlyPlacedSubmissions(
         submissions: List<Submission>
 ): List<Pair<RelevancyType, Submission>> {
     val lastSubmitIndex = submissions.indexOfLast { it.cause == SubmissionCause.SUBMIT }
@@ -63,7 +64,22 @@ private fun findRelevantSubmissions(
 
     return if (submissions.any())
         listOf(RelevancyType.NO_ASSESS_OR_SUBMIT to submissions.last())
-    else listOf()
+        else listOf()
+}
+
+private fun findRelevantSubmissions(
+        submissions: List<Submission>
+): List<Pair<RelevancyType, Submission>> {
+    val relevantlyPlaced = findRelevantlyPlacedSubmissions(submissions)
+    val maxScore = relevantlyPlaced
+            .asSequence()
+            .map { it.second.score }
+            .filterNotNull()
+            .max() ?: -1.0
+    val topScored = submissions.lastOrNull { it.score != null && it.score > maxScore }
+    return if (topScored != null)
+        relevantlyPlaced.plusElement(RelevancyType.TOP_SCORE to topScored)
+        else relevantlyPlaced
 }
 
 private fun parseSubmissionFiles(

@@ -26,6 +26,7 @@ These subdirectories can contain the following content:
 - `name - ASSESSED AFTER SUBMIT.java`: Version that was scored (but not submitted) after the last submitted version.
 - `name - ASSESSED ONLY.java`: Last assessed version, if no version was ever submitted.
 - `name - NO ASSESS OR SUBMIT.java`: No version was ever scored or submitted. Contains the last autosave.
+- `name - TOP SCORE.java`: Version with the highest score. Only included if not matched by any of the other criteria. If multiple such versions exists, the last one is chosen.
 - `error.txt`: Created if the server responded with an error when trying to download the submission page. Contains error details.
 
 All `*.java` files will also contain an initial comment with the url to the submission page, and the score of the submission.
