@@ -14,20 +14,12 @@ import org.jsoup.nodes.Element
 import java.nio.file.Files
 import java.nio.file.Path
 
-
-private val HEADER_TEMPLATE = """//
-// Submissions page: %s
-// Score: %s
-//
-
-"""
-
-private fun relevancySuffix(relevancyType: RelevancyType) = when(relevancyType) {
-        RelevancyType.SUBMITTED -> ""
-        RelevancyType.ASSESSED_AFTER_SUBMIT -> " - ASSESSED AFTER SUBMIT"
-        RelevancyType.ASSESSED_ONLY -> " - ASSESSED ONLY"
-        RelevancyType.NO_ASSESS_OR_SUBMIT -> " - NO ASSESS OR SUBMIT"
-        RelevancyType.TOP_SCORE -> " - TOP SCORE"
+private fun relevancyDir(relevancyType: RelevancyType) = when(relevancyType) {
+        RelevancyType.SUBMITTED -> "SUBMIT"
+        RelevancyType.ASSESSED_AFTER_SUBMIT -> "ASSESSED AFTER SUBMIT"
+        RelevancyType.ASSESSED_ONLY -> "ASSESSED ONLY"
+        RelevancyType.NO_ASSESS_OR_SUBMIT -> "NO ASSESS OR SUBMIT"
+        RelevancyType.TOP_SCORE -> "TOP SCORE"
 }
 
 private fun parseSubmissions(
@@ -101,14 +93,17 @@ private fun saveFiles(
 ) {
     for ((relevancy, submission) in relevantSubmissions) {
         val files = submissionFiles[submission.id]!!
+
+        val dir = studentDirectory.resolve(relevancyDir(relevancy));
+        Files.createDirectories(dir);
+
+        dir.resolve("SCORE").toFile().writeText((submission.score?.toString() ?: "Not scored") + "\n");
+        dir.resolve("URL").toFile().writeText(submissionsPageUrl + "\n");
+
         for (file in files) {
-            val fileName = "${file.name}${relevancySuffix(relevancy)}.java"
-            val filePath = studentDirectory.resolve(fileName)
-            val header = HEADER_TEMPLATE.format(
-                    submissionsPageUrl,
-                    submission.score?.toString() ?: "Not scored"
-            )
-            filePath.toFile().writeText(header + file.content)
+            val fileName = "${file.name}.java"
+            val filePath = dir.resolve(fileName)
+            filePath.toFile().writeText(file.content)
         }
     }
 }
