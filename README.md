@@ -20,7 +20,10 @@ Parameter explanation:
 ## Result
 
 After execution the target directory will contain a subdirectory for each user.
-These subdirectories can contain the following content:
+
+### Single file mode
+
+If there was only one file associated with the exercises, these subdirectories can contain the following content:
 
 - `name.java`: Last submitted version.
 - `name - ASSESSED AFTER SUBMIT.java`: Version that was scored (but not submitted) after the last submitted version.
@@ -30,3 +33,7 @@ These subdirectories can contain the following content:
 - `error.txt`: Created if the server responded with an error when trying to download the submission page. Contains error details.
 
 All `*.java` files will also contain an initial comment with the url to the submission page, and the score of the submission.
+
+### Multi file mode
+
+If more than one file are associated with the  exercise, the student directories may contain one or more subdirectories labeled `SUBMIT`, `ASSESSED AFTER SUBMIT`, `ASSESSED ONLY`, `NO ASSESS OR SUBMIT` or `TOP SCORE`. The meanings are the same as described above with `SUBMIT` being equivalent to no suffix (`name.java`). In this mode the metadata (url and score) will be placed in files called `url.txt` and `score.txt` withing the different subdirectories.
