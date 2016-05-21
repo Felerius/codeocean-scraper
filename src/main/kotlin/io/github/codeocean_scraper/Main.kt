@@ -1,14 +1,21 @@
 package io.github.codeocean_scraper
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.github.codeocean_scraper.analysis.analyseAndSave
 import io.github.codeocean_scraper.analysis.findStudentSubmissionPages
 import java.net.URL
 import java.nio.file.Paths
 
 
-fun printUsage() {
-    println("Usage: codeocean_scraper targetDirectory statisticsUrl")
+private fun printUsage() {
+    println("Usage: codeocean_scraper exerciseUrl targetDirectory")
     System.exit(1)
+}
+
+private fun URL.ensureHttps() = when (protocol) {
+    "https" -> this
+    "http" -> URL(toString().replaceFirst("http", "https"))
+    else -> throw IllegalArgumentException("Cannot convert protocol $protocol to https")
 }
 
 fun main(args: Array<String>) {
@@ -16,24 +23,31 @@ fun main(args: Array<String>) {
         printUsage()
     }
 
-    val cookie = System.getenv("CO_COOKIE")
+    val (exerciseUrlStr, targetDirectory) = args
+    val exerciseUrl = URL(exerciseUrlStr).ensureHttps()
+    val baseUrl = URL(exerciseUrl.protocol, exerciseUrl.host, exerciseUrl.port, "")
+    val baseUrlStr = baseUrl.toString()
+    val mapper = jacksonObjectMapper()
 
-    if (cookie == null) {
-        println("Please set the CO_COOKIE environment variable to your session cookie")
-        System.exit(1)
+    val cache = loadCache(mapper)
+    if (baseUrlStr !in cache.sessionKeys) {
+        println("No saved session key found, signing in")
+        cache.sessionKeys[baseUrlStr] = interactiveLogin(baseUrl)
+        cache.save(mapper)
+    } else if (!isValidSessionKey(baseUrl, cache.sessionKeys[baseUrlStr]!!)) {
+        println("Saved session key out of date, signing in")
+        cache.sessionKeys[baseUrlStr] = interactiveLogin(baseUrl)
+        cache.save(mapper)
     }
 
-    val (targetDirectory, statsUrlString) = args
-    val statsUrl = URL(statsUrlString)
-    val baseUrl = "${statsUrl.protocol}://${statsUrl.authority}"
+    val fetcher = PageFetcher(cache.sessionKeys[baseUrlStr]!!)
+    println("Fetching statistics page")
+    val statDoc = fetcher.fetch(exerciseUrlStr)
+    val studentSubmissionPages = findStudentSubmissionPages(statDoc, baseUrlStr)
 
-    val fetcher = PageFetcher(cookie)
-    println("Fetching statistics page...")
-    val statDoc = fetcher.fetch(statsUrlString)
-    val studentSubmissionPages = findStudentSubmissionPages(statDoc, baseUrl)
     for ((name, url) in studentSubmissionPages.sortedBy { it.first }) {
-        println("Fetching submission(s) for $name...")
-        analyseAndSave(url, fetcher, name, Paths.get(targetDirectory))
+        println("Fetching submission(s) for $name")
+        analyseAndSave(url, fetcher, name, Paths.get(targetDirectory), mapper)
     }
 }
 
