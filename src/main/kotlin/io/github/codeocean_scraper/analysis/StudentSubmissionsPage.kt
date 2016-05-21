@@ -106,8 +106,8 @@ private fun saveFiles(
             header = ""
             postfix = ""
 
-            dir.resolve("SCORE").toFile().writeText(submissionScore + "\n");
-            dir.resolve("URL").toFile().writeText(submissionsPageUrl + "\n");
+            dir.resolve("score.txt").toFile().writeText(submissionScore + "\n");
+            dir.resolve("url.txt").toFile().writeText(submissionsPageUrl + "\n");
         } else {
             dir = studentDirectory
             postfix = relevancy.toFilePostfix()
