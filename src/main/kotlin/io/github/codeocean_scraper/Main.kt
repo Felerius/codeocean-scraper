@@ -7,20 +7,27 @@ import java.nio.file.Paths
 
 
 fun printUsage() {
-    println("Usage: codeocean_scraper targetDirectory statisticsUrl sessionKey")
+    println("Usage: codeocean_scraper targetDirectory statisticsUrl")
     System.exit(1)
 }
 
 fun main(args: Array<String>) {
-    if (args.size != 3) {
+    if (args.size != 2) {
         printUsage()
     }
 
-    val (targetDirectory, statsUrlString, sessionKey) = args
+    val cookie = System.getenv("CO_COOKIE")
+
+    if (cookie == null) {
+        println("Please set the CO_COOKIE environment variable to your session cookie")
+        System.exit(1)
+    }
+
+    val (targetDirectory, statsUrlString) = args
     val statsUrl = URL(statsUrlString)
     val baseUrl = "${statsUrl.protocol}://${statsUrl.authority}"
 
-    val fetcher = PageFetcher(sessionKey)
+    val fetcher = PageFetcher(cookie)
     println("Fetching statistics page...")
     val statDoc = fetcher.fetch(statsUrlString)
     val studentSubmissionPages = findStudentSubmissionPages(statDoc, baseUrl)
