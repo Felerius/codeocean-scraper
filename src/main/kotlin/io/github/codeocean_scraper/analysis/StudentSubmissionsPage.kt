@@ -1,7 +1,6 @@
 package io.github.codeocean_scraper.analysis
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.github.codeocean_scraper.PageFetcher
 import io.github.codeocean_scraper.RelevancyType
@@ -136,7 +135,8 @@ fun analyseAndSave(
         submissionsPageUrl: String,
         fetcher: PageFetcher,
         studentName: String,
-        studentsDirectory: Path
+        studentsDirectory: Path,
+        mapper: ObjectMapper
 ) {
     require(studentsDirectory.toFile().isDirectory) { "Students directory must be a directory" }
     val studentDirectory = createStudentDirectory(studentsDirectory, studentName)
@@ -149,7 +149,6 @@ fun analyseAndSave(
     }
 
     val dataNode = document.select("#data").first()
-    val mapper = jacksonObjectMapper()
     val submissions = parseSubmissions(dataNode, mapper)
     val relevantSubmissions = findRelevantSubmissions(submissions)
     val submissionFiles = parseSubmissionFiles(dataNode, mapper)

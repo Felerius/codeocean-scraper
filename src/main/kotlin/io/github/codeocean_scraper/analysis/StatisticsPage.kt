@@ -10,5 +10,3 @@ fun findStudentSubmissionPages(
     val links = table.select("tbody > tr > td > a")
     return links.map { it.text() to (baseUrl + it.attr("href")) }
 }
-
-

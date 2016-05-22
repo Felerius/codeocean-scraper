@@ -10,12 +10,18 @@ Batch download student submission from codeocean
 
 ## Running
 
-Set the environment variable `CO_COOKIE` to your session key (see below) and execute with `java -jar path/to/jar targetDirectory statisticsPageUrl`.
+Execute `java -jar path/to/jar exerciseUrl targetDirectory`
 
 Parameter explanation:
+- *exerciseUrl:* URL to the statistics page of the exercise you want to download.
+  Should have the format `https://codeocean.url/exercises/<someId>/statistics`.
 - *targetDirectory:* All downloaded submissions will be saved under this directory. The directory must already exist.
-- *statisticsPageUrl:* Url to the statistics page of the exercise you want to download the submissions for.
-- *session key:* Session key for authentication. Obtained by logging into CodeOcean in your browser, then copying the content of the `_hands-on-programming_session` cookie.
+
+### Authentication
+
+The scraper uses session keys to authenticate with CodeOcean.
+These are cached per CodeOcean installation in `~/.codeocean-scraper.json`.
+If no cached session key exists or the cached one has been invalidated, you are prompted for an email and password to sign in.
 
 ## Result
 
