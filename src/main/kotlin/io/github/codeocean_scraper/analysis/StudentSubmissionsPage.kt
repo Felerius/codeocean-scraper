@@ -14,21 +14,12 @@ import org.jsoup.nodes.Element
 import java.nio.file.Files
 import java.nio.file.Path
 
-
 private val HEADER_TEMPLATE = """//
 // Submissions page: %s
 // Score: %s
 //
 
 """
-
-private fun relevancySuffix(relevancyType: RelevancyType) = when(relevancyType) {
-        RelevancyType.SUBMITTED -> ""
-        RelevancyType.ASSESSED_AFTER_SUBMIT -> " - ASSESSED AFTER SUBMIT"
-        RelevancyType.ASSESSED_ONLY -> " - ASSESSED ONLY"
-        RelevancyType.NO_ASSESS_OR_SUBMIT -> " - NO ASSESS OR SUBMIT"
-        RelevancyType.TOP_SCORE -> " - TOP SCORE"
-}
 
 private fun parseSubmissions(
         dataNode: Element,
@@ -101,13 +92,33 @@ private fun saveFiles(
 ) {
     for ((relevancy, submission) in relevantSubmissions) {
         val files = submissionFiles[submission.id]!!
+
+        val submissionScore = submission.score?.toString() ?: "Not scored";
+
+        val dir: Path;
+        val postfix: String;
+        val header: String;
+
+        if (files.size > 1) {
+            dir = studentDirectory.resolve(relevancy.toFileString());
+            Files.createDirectories(dir);
+
+            header = ""
+            postfix = ""
+
+            dir.resolve("score.txt").toFile().writeText(submissionScore + "\n");
+            dir.resolve("url.txt").toFile().writeText(submissionsPageUrl + "\n");
+        } else {
+            dir = studentDirectory
+            postfix = relevancy.toFilePostfix()
+
+            header = HEADER_TEMPLATE.format(submissionsPageUrl, submissionScore)
+        }
+
+
         for (file in files) {
-            val fileName = "${file.name}${relevancySuffix(relevancy)}.java"
-            val filePath = studentDirectory.resolve(fileName)
-            val header = HEADER_TEMPLATE.format(
-                    submissionsPageUrl,
-                    submission.score?.toString() ?: "Not scored"
-            )
+            val fileName = "${file.name}$postfix.java"
+            val filePath = dir.resolve(fileName)
             filePath.toFile().writeText(header + file.content)
         }
     }
