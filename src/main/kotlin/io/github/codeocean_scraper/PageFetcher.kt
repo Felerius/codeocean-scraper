@@ -20,5 +20,5 @@ fun isValidSessionKey(baseUrl: URL, sessionKey: String): Boolean {
     val response = Jsoup.connect(signInUrl.toString())
                         .cookie(cookieName, sessionKey)
                         .execute()
-    return response.url() == baseUrl
+    return response.url() != signInUrl
 }
