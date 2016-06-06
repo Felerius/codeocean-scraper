@@ -10,12 +10,13 @@ Batch download student submission from codeocean
 
 ## Running
 
-Execute `java -jar path/to/jar exerciseUrl targetDirectory`
+Execute `java -jar path/to/jar exerciseUrl targetDirectory deadline`
 
 Parameter explanation:
 - *exerciseUrl:* URL to the statistics page of the exercise you want to download.
   Should have the format `https://codeocean.url/exercises/<someId>/statistics`.
 - *targetDirectory:* All downloaded submissions will be saved under this directory. The directory must already exist.
+- *deadline:* The deadline of the exercise, if a submission was made after the deadline, a file called `DEADLINE_EXCEEDED` will be created in the output directory. Must be of the form `YYYY-MM-DDThh:mm+tz:tz` (in other words, an ISO 8601 date & time, as accepted by `java.time.OffsetDateTime.parse`).
 
 ### Authentication
 

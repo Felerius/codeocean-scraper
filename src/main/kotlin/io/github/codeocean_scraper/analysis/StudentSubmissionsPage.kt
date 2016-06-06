@@ -12,6 +12,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.OffsetDateTime
 
 private val HEADER_TEMPLATE = """//
 // Submissions page: %s
@@ -87,6 +88,7 @@ private fun saveFiles(
         submissionsPageUrl: String,
         relevantSubmissions: List<Pair<RelevancyType, Submission>>,
         submissionFiles: Map<Int, List<SubmissionFile>>,
+        deadlineExceeded: Boolean,
         studentDirectory: Path
 ) {
     for ((relevancy, submission) in relevantSubmissions) {
@@ -114,6 +116,9 @@ private fun saveFiles(
             header = HEADER_TEMPLATE.format(submissionsPageUrl, submissionScore)
         }
 
+        if (deadlineExceeded) {
+            dir.resolve("DEADLINE_EXCEEDED").toFile().writeText("");
+        }
 
         for (file in files) {
             val fileName = "${file.name}$postfix.java"
@@ -135,6 +140,7 @@ fun analyseAndSave(
         submissionsPageUrl: String,
         fetcher: PageFetcher,
         studentName: String,
+        deadline: OffsetDateTime,
         studentsDirectory: Path,
         mapper: ObjectMapper
 ) {
@@ -151,6 +157,7 @@ fun analyseAndSave(
     val dataNode = document.select("#data").first()
     val submissions = parseSubmissions(dataNode, mapper)
     val relevantSubmissions = findRelevantSubmissions(submissions)
+    val deadlineExceeded = relevantSubmissions.any { it.second.updatedAt >= deadline }
     val submissionFiles = parseSubmissionFiles(dataNode, mapper)
-    saveFiles(submissionsPageUrl, relevantSubmissions, submissionFiles, studentDirectory)
+    saveFiles(submissionsPageUrl, relevantSubmissions, submissionFiles, deadlineExceeded, studentDirectory)
 }
